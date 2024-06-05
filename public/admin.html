@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Athletricks</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Athletricks Admin</div>
+    </header>
+    <main>
+        <section class="login">
+            <h1>Admin Login</h1>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div id="login-error"></div>
+        </section>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB3Fwpw6blor8BMBlE81IoSe5PRk1wv8U",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    window.location.href = 'admin-dashboard.html'; // Redirect to admin dashboard
+                })
+                .catch((error) => {
+                    document.getElementById('login-error').innerText = error.message;
+                });
+        });
+    </script>
+</body>
+</html>

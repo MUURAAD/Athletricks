@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>See More Blogs - Athletricks</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Athletricks</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                </ul>
+                <button class="sign-up">Sign up</button>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="blog-section">
+            <h2>More Blogs</h2>
+            <div class="blog-container">
+                <!-- Blog posts will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB3Fwpw6blor8BMBlE81IoSe5PRk1wv8U",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const loadPosts = async () => {
+            const querySnapshot = await getDocs(collection(db, 'posts'));
+            const blogPostsContainer = document.querySelector('.blog-container');
+            querySnapshot.forEach((doc) => {
+                const post = doc.data();
+                const postElement = document.createElement('div');
+                postElement.classList.add('blog-card');
+                postElement.innerHTML = `
+                    <img src="${post.imageUrl}" alt="${post.title}">
+                    <div class="blog-content">
+                        <span class="tag">#${post.tag}</span>
+                        <p class="date">${new Date(post.date).toDateString()}</p>
+                        <h3>${post.title}</h3>
+                        <p>${post.content.substring(0, 100)}...</p>
+                        <a href="#">Read full post →</a>
+                    </div>
+                `;
+                blogPostsContainer.appendChild(postElement);
+            });
+        };
+
+        window.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+</body>
+</html>

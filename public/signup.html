@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Athletricks</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Athletricks</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                </ul>
+                <button class="sign-up">Sign up</button>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="signup-section">
+            <h2>Create an Account</h2>
+            <form id="signup-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </section>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB3Fwpw6blor8BMBlE81IoSe5PRk1wv8U",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                alert('Account created successfully');
+                window.location.href = 'index.html'; // Redirect to home page
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>

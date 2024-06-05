@@ -1,0 +1,307 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Athletricks</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Athletricks Admin</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="logout.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Admin Dashboard</h1>
+        <section class="post-editor">
+            <h2>Create a New Post</h2>
+            <form id="post-form">
+                <input type="text" id="title" placeholder="Title" required>
+                <input type="text" id="tag" placeholder="Tag" required>
+                <input type="text" id="imageUrl" placeholder="Image URL" required>
+                <textarea id="content" placeholder="Content" required></textarea>
+                <button type="submit">Publish</button>
+            </form>
+        </section>
+        <section class="post-list">
+            <h2>Existing Posts</h2>
+            <ul id="posts-list"></ul>
+        </section>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB3Fwpw6blor8BMBlE81IoSe5PRk1wv8U",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const postForm = document.getElementById('post-form');
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const tag = document.getElementById('tag').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+            const content = document.getElementById('content').value;
+
+            await addDoc(collection(db, 'posts'), {
+                title, tag, imageUrl, content, date: new Date().toISOString()
+            });
+
+            postForm.reset();
+            loadPosts();
+        });
+
+        const loadPosts = async () => {
+            const postsList = document.getElementById('posts-list');
+            const querySnapshot = await getDocs(collection(db, 'posts'));
+            postsList.innerHTML = '';
+            querySnapshot.forEach((doc) => {
+                const post = doc.data();
+                const postElement = document.createElement('li');
+                postElement.textContent = post.title;
+                postsList.appendChild(postElement);
+            });
+        };
+
+        window.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+</body>
+</html> -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Athletricks</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Athletricks Admin</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="logout.html">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="post-editor">
+            <h2>Create a New Post</h2>
+            <form id="post-form">
+                <input type="text" id="title" placeholder="Title" required>
+                <input type="text" id="tag" placeholder="Tag" required>
+                <input type="text" id="imageUrl" placeholder="Image URL" required>
+                <textarea id="content" placeholder="Content" required></textarea>
+                <button type="submit">Publish</button>
+            </form>
+            <div id="error-message" style="color: red;"></div>
+        </section>
+        <section class="post-list">
+            <h2>Existing Posts</h2>
+            <ul id="posts-list"></ul>
+        </section>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB3Fwpw6blor8BMBlE81IoSe5PRk1wv8U",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const postForm = document.getElementById('post-form');
+        const errorMessage = document.getElementById('error-message');
+
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const tag = document.getElementById('tag').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+            const content = document.getElementById('content').value;
+
+            try {
+                await addDoc(collection(db, 'posts'), {
+                    title, tag, imageUrl, content, date: new Date().toISOString()
+                });
+                postForm.reset();
+                errorMessage.textContent = '';
+                loadPosts();
+            } catch (error) {
+                console.error('Error adding document: ', error);
+                errorMessage.textContent = 'Error adding document: ' + error.message;
+            }
+        });
+
+        const loadPosts = async () => {
+            try {
+                const postsList = document.getElementById('posts-list');
+                const querySnapshot = await getDocs(collection(db, 'posts'));
+                postsList.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = document.createElement('li');
+                    postElement.textContent = post.title;
+                    postsList.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error('Error loading documents: ', error);
+                errorMessage.textContent = 'Error loading documents: ' + error.message;
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Athletricks</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Athletricks Admin</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="logout.html">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="post-editor">
+            <h2>Create a New Post</h2>
+            <form id="post-form">
+                <input type="text" id="title" placeholder="Title" required>
+                <input type="text" id="tag" placeholder="Tag" required>
+                <input type="file" id="image" placeholder="Upload Image" required>
+                <textarea id="content" placeholder="Content" required></textarea>
+                <button type="submit">Publish</button>
+            </form>
+            <div id="error-message" style="color: red;"></div>
+        </section>
+        <section class="post-list">
+            <h2>Existing Posts</h2>
+            <ul id="posts-list"></ul>
+        </section>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB3Fwpw6blor8BMBlE81IoSe5PRk1wv8U",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        const postForm = document.getElementById('post-form');
+        const errorMessage = document.getElementById('error-message');
+
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const tag = document.getElementById('tag').value;
+            const image = document.getElementById('image').files[0];
+            const content = document.getElementById('content').value;
+
+            if (!image) {
+                errorMessage.textContent = 'Please select an image to upload.';
+                return;
+            }
+
+            const storageRef = ref(storage, 'images/' + image.name);
+            const uploadTask = uploadBytesResumable(storageRef, image);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    // Handle progress, if needed
+                },
+                (error) => {
+                    console.error('Upload failed:', error);
+                    errorMessage.textContent = 'Image upload failed: ' + error.message;
+                },
+                async () => {
+                    const imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                    try {
+                        await addDoc(collection(db, 'posts'), {
+                            title, tag, imageUrl, content, date: new Date().toISOString()
+                        });
+                        postForm.reset();
+                        errorMessage.textContent = '';
+                        loadPosts();
+                    } catch (error) {
+                        console.error('Error adding document:', error);
+                        errorMessage.textContent = 'Error adding document: ' + error.message;
+                    }
+                }
+            );
+        });
+
+        const loadPosts = async () => {
+            try {
+                const postsList = document.getElementById('posts-list');
+                const querySnapshot = await getDocs(collection(db, 'posts'));
+                postsList.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = document.createElement('li');
+                    postElement.textContent = post.title;
+                    postsList.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                errorMessage.textContent = 'Error loading documents: ' + error.message;
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+</body>
+</html>
+

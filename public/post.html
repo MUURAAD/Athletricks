@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Blog Post</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Athletricks</h1>
+            <nav id="navbar">
+                <ul id="nav-list">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <a href="signup.html"><button class="sign-up">Sign up</button></a>
+                <button class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </button>
+                <div class="dropdown" id="dropdown">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="solutions.html">Solutions</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="admin.html">Admin</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="post-container" id="post-container">
+            <!-- Full blog post content will be loaded here -->
+        </div>
+    </main>
+    <footer>
+        <div class="footer-container">
+            <h2>Get in Touch</h2>
+            <p>Ecosystem bootstrapping learning curve lean startup disruptive. Marketing long tail disruptive agile development partner.</p>
+            <div class="footer-links">
+                <a href="https://dribbble.com/example" target="_blank">dribbble.com/example</a>
+                <a href="mailto:contact@example.com">contact@example.com</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><img src="images/instagram-icon.png" alt="Instagram"></a>
+                <a href="#"><img src="images/linkedin-icon.png" alt="LinkedIn"></a>
+                <a href="#"><img src="images/pinterest-icon.png" alt="Pinterest"></a>
+                <a href="#"><img src="images/twitter-icon.png" alt="Twitter"></a>
+            </div>
+        </div>
+    </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "athletricks-1edb1.firebaseapp.com",
+            databaseURL: "https://athletricks-1edb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "athletricks-1edb1",
+            storageBucket: "athletricks-1edb1.appspot.com",
+            messagingSenderId: "332778703319",
+            appId: "1:332778703319:web:f1d69e60c12a79be8ba392",
+            measurementId: "G-CLSNPG7LYK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const loadPost = async () => {
+            const params = new URLSearchParams(window.location.search);
+            const postId = params.get('id');
+            if (!postId) {
+                document.getElementById('post-container').innerHTML = '<p>Post not found.</p>';
+                return;
+            }
+
+            const docRef = doc(db, 'posts', postId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const post = docSnap.data();
+                document.getElementById('post-container').innerHTML = `
+                    <div class="blog-card full-post-card">
+                        <h2>${post.title}</h2>
+                        <p><span class="tag">#${post.tag}</span></p>
+                        <p class="date">${new Date(post.date).toDateString()}</p>
+                        <img src="${post.imageUrl}" alt="${post.title}">
+                        <p>${post.content}</p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('post-container').innerHTML = '<p>Post not found.</p>';
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', loadPost);
+
+        const hamburger = document.getElementById('hamburger');
+        const dropdown = document.getElementById('dropdown');
+
+        hamburger.addEventListener('click', () => {
+            dropdown.classList.toggle('show');
+        });
+    </script>
+</body>
+</html>
